@@ -16,7 +16,7 @@ client = MongoClient()
 db = client.ind_ultimate
 
 @app.route("/get", methods=['GET'])
-def login():
+def get():
     #usr = db.users.find_one()
     return "k"
 
@@ -28,6 +28,15 @@ def login():
 #    else:
 #        return 'didnt_work'
 
+#login
+@app.route('/login', methods=['POST'])
+def login():
+  response = {}      
+  response["response"] = "success"
+  response = json.dumps(response)
+  return response
+
+#create user
 @app.route("/createuser", methods=['POST'])
 def create_user():
     #Need validation(Email)
@@ -41,7 +50,7 @@ def create_user():
             }
 
     response = {}      
-    response["response"] = "It Worked!"
+    response["response"] = "success"
     response = json.dumps(response)
     return response
    # try:
