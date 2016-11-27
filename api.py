@@ -114,6 +114,11 @@ def create_team():
     response = json.dumps(response)
     return response
 
+#get teams(For now with all teams not just of the user)
+@app.route("/getteam", methods=['GET'])
+def get_team():
+  teams = db.teams.find()
+  return dumps(teams)
 if __name__ == "__main__":
     app.debug = True
     app.run()
