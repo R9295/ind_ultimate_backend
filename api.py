@@ -9,8 +9,11 @@ import random
 from bson.json_util import dumps
 
 
-
 app= Flask(__name__)
+
+# Team code generator
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+  return ''.join(random.choice(chars) for _ in range(size))
 
 client = MongoClient()
 db = client.ind_ultimate
@@ -34,7 +37,6 @@ def login():
   count = db.users.find({"email":request.json['email']}).count()
 
   if count == 0:
-    print 'xd'
     response = {}      
     response["response"] = "failure"
     response = json.dumps(response)
@@ -45,13 +47,11 @@ def login():
     user = db.users.find({"email":request.json['email'],"password":hashpw(request.json['password'].encode('utf-8'),count['password'].encode('utf-8')) }).count()
     print request.json['password']
     if user == 1:
-      print 'xd1'
       response = {}      
       response["response"] = "success"
       response = json.dumps(response)
       return response  
     else:
-      print 'xd12'
       response = {}      
       response["response"] = "failure"
       response = json.dumps(response)
@@ -91,6 +91,28 @@ def create_user():
     return response
 
 
+#create team
+@app.route("/createteam", methods=['POST'])
+def create_team():
+  team = {
+  "name": request.json['name'],
+  "join_code": "%s"%(id_generator()),
+  "captain": "need_to_add",
+  "members": ["need_to_add"],
+  "city":request.json['city'],
+  "contact":request.json['contact']
+  }
+  try:
+    db.teams.insert_one(team)
+    response = {}      
+    response["response"] = "success"
+    response = json.dumps(response)
+    return response
+  except:
+    response = {}      
+    response["response"] = "failure"
+    response = json.dumps(response)
+    return response
 
 if __name__ == "__main__":
     app.debug = True
